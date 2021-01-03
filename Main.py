@@ -1,6 +1,7 @@
 import pygame
 from TicTacToe import WIDTH, HEIGHT
 from TicTacToe.board import Board
+import time
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tic Tac Toe")
 
@@ -20,7 +21,7 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and not board.game_over:
                 mouseX = event.pos[0]
                 mouseY = event.pos[1]
                 clicked_row = int(mouseY // 100)
@@ -38,9 +39,13 @@ def main():
         board.draw_grid(WIN, 1, clicked_row, clicked_col)
         pygame.display.update()
 
-
+        if board.game_over:
+            time.sleep(1)
+            board.restart(WIN)
+            board.game_over = False
 
     pygame.quit()
+    # board.restart(WIN)
 
 
 if __name__ == '__main__':

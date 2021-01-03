@@ -1,4 +1,3 @@
-import pygame
 from .constants import *
 import numpy as np
 
@@ -50,12 +49,11 @@ class Board:
             self.game_over = True
 
         elif self.has_horizontal_line(player):
-
             self.draw_horizontal_line(row, win)
             self.game_over = True
 
         elif self.is_diagonal_has_same_player(player):
-           
+
             self.draw_diagonal_line(win)
             self.game_over = True
 
