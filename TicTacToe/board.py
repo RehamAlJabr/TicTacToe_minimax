@@ -1,6 +1,6 @@
 from .constants import *
 import numpy as np
-
+import time
 
 class Board:
 
@@ -9,18 +9,27 @@ class Board:
         self.has_asc = False
         self.has_dec = False
         self.game_over = False
+        self.turn = X
 
-    def draw_grid(self, win, player, row=None, col=None):
-        win.fill(WHITE)
+    def draw_grid(self, win):
         for _row in range(1, 3):
             pygame.draw.line(win, BLACK, (0, _row * 100), (WIDTH, _row * 100), 4)
             pygame.draw.line(win, BLACK, (_row * 100, 0), (_row * 100, HEIGHT), 4)
 
-        self.draw_shape(win, player, row, col)
 
-    def mark_square(self, row, col, player):
+
+    def mark_square(self, win, row, col, player):
+
         if self.is_square_available(row, col):
             self.board[row][col] = player
+            self.turn = player * -1
+            self.draw_shape(win, player, row, col)
+            self.who_wins(win, player, row, col)
+            pygame.display.update()
+            if self.game_over:
+                time.sleep(1)
+
+
 
     def is_square_available(self, row, col):
         return self.board[row][col] == 0
@@ -29,6 +38,7 @@ class Board:
         return np.count_nonzero(self.board == 0) == 0
 
     def draw_shape(self, win, player,  row=None, col=None):
+
         for _row in range(ROWS):
             for _col in range(COLS):
                 if self.board[_row][_col] == O:
@@ -40,32 +50,43 @@ class Board:
                     pygame.draw.line(win, BLUE, (_col * 100 + SPACE, _row * 100 + 50 + SPACE),
                                      (_col * 100 + 100 - SPACE, _row * 100 + 50 - SPACE), CROSS)
 
-        self.who_wins(win, player, row, col)
+
+
 
     def who_wins(self, win, player, row, col):
+
         if self.has_vertical_line(player):
 
             self.draw_vertical_line(col, win)
+            print ("v")
+            print (col, row)
             self.game_over = True
 
         elif self.has_horizontal_line(player):
+            print ("h")
             self.draw_horizontal_line(row, win)
             self.game_over = True
 
         elif self.is_diagonal_has_same_player(player):
-
+            print("d")
             self.draw_diagonal_line(win)
             self.game_over = True
+
+        elif self.is_board_full():
+            print ("TOE", TOE)
+            self.game_over = True
+
 
     def draw_vertical_line(self, col, win):
 
         posX = (col * 100) + 50
         pygame.draw.line(win, BLACK, (posX, 15), (posX, HEIGHT - 15), 15)
 
+
     def has_vertical_line(self, player):
         arr = self.board.sum(axis=0)
         for col in range(COLS):
-            if arr[col] == player * 3:
+            if arr[col] == player * 3:  # -3 or 3
                 return True
 
         return False
@@ -111,4 +132,6 @@ class Board:
     def restart(self, win):
         win.fill(WHITE)
         self.board = np.zeros((ROWS, COLS))
-        self.draw_shape(win, 1)
+        self.turn = X
+        self.draw_grid(win)
+        self.draw_shape(win, self.turn)

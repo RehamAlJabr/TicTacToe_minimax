@@ -1,11 +1,11 @@
 import pygame
-from TicTacToe import WIDTH, HEIGHT
+from TicTacToe import *
 from TicTacToe.board import Board
 import time
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tic Tac Toe")
 
-board = Board()
+
 FPS = 60
 
 
@@ -14,9 +14,13 @@ def main():
     clock = pygame.time.Clock()
     clicked_row = 0
     clicked_col = 0
+    board = Board()
+    WIN.fill(WHITE)
+    board.draw_grid(WIN)
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
+            print(board.game_over)
 
             if event.type == pygame.QUIT:
                 run = False
@@ -26,23 +30,29 @@ def main():
                 mouseY = event.pos[1]
                 clicked_row = int(mouseY // 100)
                 clicked_col = int(mouseX // 100)
-                # print(clicked_row, clicked_col)
-                board.mark_square(clicked_row, clicked_col, 1)
-                print(board.board)
-                board.draw_grid(WIN, 1, clicked_row, clicked_col)
 
+                board.mark_square(WIN, clicked_row, clicked_col, board.turn)
+
+                print(board.board)
+                board.draw_grid(WIN)
+                board.draw_shape(WIN, board.turn, clicked_row, clicked_col)
             if event.type == pygame.KEYDOWN:
+
                 if event.key == pygame.K_r:
                     board.restart(WIN)
 
-        print(clicked_row, clicked_col)
-        board.draw_grid(WIN, 1, clicked_row, clicked_col)
+        # board.draw_grid(WIN, board.turn, clicked_row, clicked_col)
+
         pygame.display.update()
 
+
         if board.game_over:
-            time.sleep(1)
-            board.restart(WIN)
-            board.game_over = False
+
+           board.restart(WIN)
+           board.game_over = False
+
+
+
 
     pygame.quit()
     # board.restart(WIN)
