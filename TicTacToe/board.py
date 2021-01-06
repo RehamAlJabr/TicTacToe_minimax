@@ -35,6 +35,7 @@ class Board:
                 self.who_wins(win, O, best[0], best[1])
                 pygame.display.update()
 
+
                 break
             else:
                 best = self.minimax(win, self.board, 0, O, row, col)
@@ -71,6 +72,7 @@ class Board:
         else:
             self.game_over = False
             self._score = TOE
+
 
     def check_winner(self, player):
 
@@ -162,9 +164,11 @@ class Board:
             score[0], score[1] = x, y
 
             if player == O:
-                best = max(score[2], best[2])
+                if score[2] > best[2]:
+                    best = score
             else:
-                best = min(score[2], best[2])
+                if score[2] < best[2]:
+                    best = score
 
         # print("best", best)
         return best
