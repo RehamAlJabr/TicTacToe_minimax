@@ -1,10 +1,10 @@
-import pygame
+
 
 WIDTH, HEIGHT = 300, 300
 ROWS, COLS = 3, 3
 SQUARE_SIZE = WIDTH // COLS
 
-X, O, TOE = 1, -1, 0
+X, O, TOE = -1, +1, 0
 CIRCLE_RADIUS = 30
 CIRCLE_WIDTH = 7
 CROSS = 17
